@@ -2,7 +2,7 @@
 // https://github.com/dubzzz/fast-check/issues/2781
 
 import { Chain, types }
-  from 'https://deno.land/x/clarinet@v0.31.0/index.ts';
+  from 'https://deno.land/x/clarinet@v0.34.0/index.ts';
 
 export class Principal {
   readonly value: string;

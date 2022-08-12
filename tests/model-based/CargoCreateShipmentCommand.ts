@@ -2,7 +2,7 @@
 // https://github.com/dubzzz/fast-check/issues/2781
 
 import { Tx }
-  from 'https://deno.land/x/clarinet@v0.31.0/index.ts';
+  from 'https://deno.land/x/clarinet@v0.34.0/index.ts';
 
 import { Principal, Ascii, Model, Real, CargoCommand }
   from './CargoCommandModel.ts'

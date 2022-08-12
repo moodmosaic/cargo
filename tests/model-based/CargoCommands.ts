@@ -2,7 +2,7 @@
 // https://github.com/dubzzz/fast-check/issues/2781
 
 import { Account }
-  from 'https://deno.land/x/clarinet@v0.31.0/index.ts';
+  from 'https://deno.land/x/clarinet@v0.34.0/index.ts';
 
 import fc
   from 'https://cdn.skypack.dev/fast-check@3.0.0';
