@@ -1,6 +1,3 @@
-// @ts-nocheck
-// https://github.com/dubzzz/fast-check/issues/2781
-
 import { Principal, Uint, Model, Real, CargoCommand }
   from './CargoCommandModel.ts'
 
@@ -18,7 +15,7 @@ export class CargoGetUnknownShipmentCommand
     this.sender = sender;
   }
 
-  check(model: Readonly<Model>): bool {
+  check(model: Readonly<Model>): boolean {
     const isUnknown = this.shipId.value > model.currentId;
     return isUnknown;
   }
@@ -32,7 +29,7 @@ export class CargoGetUnknownShipmentCommand
       .expectErr()
       .expectUint(100);
 
-    console.log(this.printInfo());
+    console.log(this.printInfo(_));
   }
 
   toString() {
@@ -45,7 +42,7 @@ export class CargoGetUnknownShipmentCommand
   printInfo(_: Readonly<Model>) {
     const info =
         `Ӿ tx-sender ${this.sender.value.padStart(43, ' ')} `
-      + `░ ${'get-shipment'.padStart(19, ' ')} `
+      + `⚑ ${'get-shipment'.padStart(19, ' ')} `
       + `id ${this.shipId.value.toString().padStart(3, ' ')} `
       + `which is unknown, returns err u100`;
     return info;

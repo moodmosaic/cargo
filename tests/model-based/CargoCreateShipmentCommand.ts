@@ -1,11 +1,8 @@
-// @ts-nocheck
-// https://github.com/dubzzz/fast-check/issues/2781
+import { Principal, Ascii, Model, Real, CargoCommand }
+  from './CargoCommandModel.ts'
 
 import { Tx }
   from 'https://deno.land/x/clarinet@v0.34.0/index.ts';
-
-import { Principal, Ascii, Model, Real, CargoCommand }
-  from './CargoCommandModel.ts'
 
 export class CargoCreateShipmentCommand
   implements CargoCommand {
@@ -24,7 +21,7 @@ export class CargoCreateShipmentCommand
     this.giftee = giftee;
   }
 
-  check(_: Readonly<Model>): bool {
+  check(_: Readonly<Model>): boolean {
     // Can always create shipment.
     return true;
   }
@@ -47,7 +44,7 @@ export class CargoCreateShipmentCommand
         'Shipment created successfully');
 
     model.currentId = model.currentId + 1;
-    model.shipments[model.currentId] = {
+    model.shipments.set(model.currentId, {
         region: this.region
                   .clarityValue()
       , status: new Ascii('In Transit')
@@ -56,7 +53,7 @@ export class CargoCreateShipmentCommand
                   .value
       , giftee: this.giftee
                   .value
-    };
+    });
 
     console.log(this.printInfo(model));
   }

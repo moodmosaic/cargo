@@ -1,12 +1,3 @@
-// @ts-nocheck
-// https://github.com/dubzzz/fast-check/issues/2781
-
-import { Account }
-  from 'https://deno.land/x/clarinet@v0.34.0/index.ts';
-
-import fc
-  from 'https://cdn.skypack.dev/fast-check@3.0.0';
-
 import { Principal, Uint, Ascii }
   from './CargoCommandModel.ts'
 
@@ -25,13 +16,20 @@ import { CargoUpdateShipmentCommand }
 import { CargoUpdateOthersShipmentCommand }
   from './CargoUpdateOthersShipmentCommand.ts'
 
+import { Account }
+  from 'https://deno.land/x/clarinet@v0.34.0/index.ts';
+
+import fuzz
+  from 'https://cdn.skypack.dev/fast-check@3.0.0';
+
 export function CargoCommands(accounts: Map<string, Account>) {
   const allCommands = [
-    fc.record({
-        region: fc.constantFrom('Southwest', 'Southeast', 'Midwest')
-      , sender: fc.constantFrom(...accounts.values()).map(account => account.address)
-      , giftee: fc.constantFrom(...accounts.values()).map(account => account.address)
-    }).map(r =>
+    // CargoCreateShipmentCommand
+    fuzz.record({
+        region: fuzz.constantFrom('Southwest', 'Southeast', 'Midwest')
+      , sender: fuzz.constantFrom(...accounts.values()).map((account: Account) => account.address)
+      , giftee: fuzz.constantFrom(...accounts.values()).map((account: Account) => account.address)
+    }).map((r: { region: string; sender: string; giftee: string; }) =>
       new CargoCreateShipmentCommand(
           new Ascii(
             r.region)
@@ -41,18 +39,20 @@ export function CargoCommands(accounts: Map<string, Account>) {
             r.giftee)
         )
       ),
-    fc.record({
-        shipId: fc.integer({min: 1, max: 100})
-    }).map(r =>
+    // CargoGetShipmentCommand
+    fuzz.record({
+        shipId: fuzz.integer({min: 1, max: 100})
+    }).map((r: { shipId: number; }) =>
       new CargoGetShipmentCommand(
           new Uint(
             r.shipId)
         )
       ),
-    fc.record({
-        shipId: fc.integer({min: 100, max: 999})
-      , sender: fc.constantFrom(...accounts.values()).map(account => account.address)
-    }).map(r =>
+    // CargoGetUnknownShipmentCommand
+    fuzz.record({
+        shipId: fuzz.integer({min: 100, max: 999})
+      , sender: fuzz.constantFrom(...accounts.values()).map((account: Account) => account.address)
+    }).map((r: { shipId: number; sender: string; }) =>
       new CargoGetUnknownShipmentCommand(
           new Uint(
             r.shipId)
@@ -60,11 +60,12 @@ export function CargoCommands(accounts: Map<string, Account>) {
             r.sender)
         )
       ),
-    fc.record({
-        shipId: fc.integer({min: 1, max: 100}),
-        region: fc.constantFrom('Northeast', 'West')
-      , sender: fc.constantFrom(...accounts.values()).map(account => account.address)
-    }).map(r =>
+    // CargoUpdateShipmentCommand
+    fuzz.record({
+        shipId: fuzz.integer({min: 1, max: 100}),
+        region: fuzz.constantFrom('Northeast', 'West')
+      , sender: fuzz.constantFrom(...accounts.values()).map((account: Account) => account.address)
+    }).map((r: { shipId: number; region: string; sender: string; }) =>
       new CargoUpdateShipmentCommand(
           new Uint(
             r.shipId)
@@ -74,11 +75,12 @@ export function CargoCommands(accounts: Map<string, Account>) {
             r.sender)
         )
       ),
-    fc.record({
-        shipId: fc.integer({min: 1, max: 100}),
-        region: fc.constantFrom('Northeast', 'West')
-      , sender: fc.constantFrom(...accounts.values()).map(account => account.address)
-    }).map(r =>
+    // CargoUpdateOthersShipmentCommand
+    fuzz.record({
+        shipId: fuzz.integer({min: 1, max: 100}),
+        region: fuzz.constantFrom('Northeast', 'West')
+      , sender: fuzz.constantFrom(...accounts.values()).map((account: Account) => account.address)
+    }).map((r: { shipId: number; region: string; sender: string; }) =>
       new CargoUpdateOthersShipmentCommand(
           new Uint(
             r.shipId)
@@ -89,5 +91,6 @@ export function CargoCommands(accounts: Map<string, Account>) {
         )
       ),
   ];
-  return fc.commands(allCommands, { size: '+1' });
+  // On size: https://github.com/dubzzz/fast-check/discussions/2978
+  return fuzz.commands(allCommands, { size: 'large' });
 }

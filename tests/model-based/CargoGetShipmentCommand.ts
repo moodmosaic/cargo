@@ -1,6 +1,3 @@
-// @ts-nocheck
-// https://github.com/dubzzz/fast-check/issues/2781
-
 import { Uint, Model, Real, CargoCommand }
   from './CargoCommandModel.ts'
 
@@ -18,13 +15,13 @@ export class CargoGetShipmentCommand
     this.shipId = shipId;
   }
 
-  check(model: Readonly<Model>): bool {
+  check(model: Readonly<Model>): boolean {
     const hasShipped = this.shipId.value < model.currentId;
     return hasShipped;
   }
 
   run(model: Model, real: Real): void {
-    const record = model.shipments[this.shipId.value];
+    const record = model.shipments.get(this.shipId.value)!;
     const actual = real.chain
       .callReadOnlyFn(
         'cargo', 'get-shipment', [this.shipId.clarityValue()],
@@ -51,7 +48,7 @@ export class CargoGetShipmentCommand
   }
 
   printInfo(model: Readonly<Model>) {
-    const ship = model.shipments[this.shipId.value];
+    const ship = model.shipments.get(this.shipId.value)!;
     const info =
         `Ӿ tx-sender ${ship.sender.padStart(43, ' ')} `
       + `✓ ${'get-shipment'.padStart(19, ' ')} `

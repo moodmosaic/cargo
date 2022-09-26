@@ -1,11 +1,8 @@
-// @ts-nocheck
-// https://github.com/dubzzz/fast-check/issues/2781
+import { Principal, Ascii, Uint, Model, Real, CargoCommand }
+  from './CargoCommandModel.ts'
 
 import { Tx }
   from 'https://deno.land/x/clarinet@v0.34.0/index.ts';
-
-import { Principal, Ascii, Model, Real, CargoCommand }
-  from './CargoCommandModel.ts'
 
 export class CargoUpdateOthersShipmentCommand
   implements CargoCommand {
@@ -24,10 +21,10 @@ export class CargoUpdateOthersShipmentCommand
     this.sender = sender;
   }
 
-  check(model: Readonly<Model>): bool {
+  check(model: Readonly<Model>): boolean {
     const hasShipped = this.shipId.value < model.currentId;
     if (hasShipped) {
-      const shipment = model.shipments[this.shipId.value];
+      const shipment = model.shipments.get(this.shipId.value)!;
       return shipment.sender !== this.sender.value; // Other sender's shipment.
     }
     return false;
@@ -62,7 +59,7 @@ export class CargoUpdateOthersShipmentCommand
   printInfo(_: Readonly<Model>) {
     const info =
         `Ӿ tx-sender ${this.sender.value.padStart(43, ' ')} `
-      + `░     update-shipment id ${this.shipId.value.toString().padStart(3, ' ')} `
+      + `⚑     update-shipment id ${this.shipId.value.toString().padStart(3, ' ')} `
       + `which belogs to others, returns err u101`;
     return info;
   }

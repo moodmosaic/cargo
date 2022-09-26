@@ -1,8 +1,25 @@
-// @ts-nocheck
+// @ts-nocheck FIXME
 // https://github.com/dubzzz/fast-check/issues/2781
+import fuzz
+  from "https://cdn.skypack.dev/fast-check@3.0.0";
 
 import { Chain, types }
-  from 'https://deno.land/x/clarinet@v0.34.0/index.ts';
+  from "https://deno.land/x/clarinet@v0.34.0/index.ts";
+
+export type Model = {
+  shipments: Map<number, Record<string, string>>;
+  currentId: number;
+};
+
+export type Real = {
+  chain: Chain;
+};
+
+export type CargoCommand = fuzz.Command<Model, Real>;
+
+//
+// Interop: Clarity <-> TypeScript
+//
 
 export class Principal {
   readonly value: string;
@@ -39,15 +56,3 @@ export class Ascii {
     return types.ascii(this.value);
   }
 }
-
-export type Model = {
-  shipments: Map<number, Record<string, string>>
-, currentId: number
-};
-
-export type Real = {
-  chain: Chain
-};
-
-export type CargoCommand =
-  fc.Command<Model, Real>;

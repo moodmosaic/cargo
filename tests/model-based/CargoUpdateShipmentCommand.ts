@@ -1,11 +1,8 @@
-// @ts-nocheck
-// https://github.com/dubzzz/fast-check/issues/2781
+import { Principal, Ascii, Uint, Model, Real, CargoCommand }
+  from './CargoCommandModel.ts'
 
 import { Tx }
   from 'https://deno.land/x/clarinet@v0.34.0/index.ts';
-
-import { Principal, Ascii, Model, Real, CargoCommand }
-  from './CargoCommandModel.ts'
 
 export class CargoUpdateShipmentCommand
   implements CargoCommand {
@@ -24,10 +21,10 @@ export class CargoUpdateShipmentCommand
     this.sender = sender;
   }
 
-  check(model: Readonly<Model>): bool {
+  check(model: Readonly<Model>): boolean {
     const hasShipped = this.shipId.value < model.currentId;
     if (hasShipped) {
-      const shipment = model.shipments[this.shipId.value];
+      const shipment = model.shipments.get(this.shipId.value)!;
       return shipment.sender === this.sender.value;
     }
     return false;
@@ -50,7 +47,7 @@ export class CargoUpdateShipmentCommand
       .expectAscii(
         'Shipment updated successfully');
 
-    model.shipments[this.shipId.value].region = this.region.clarityValue();
+    model.shipments.get(this.shipId.value)!.region = this.region.clarityValue();
 
     console.log(this.printInfo(model));
   }
