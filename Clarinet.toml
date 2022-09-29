@@ -1,11 +1,8 @@
 [project]
 name = "cargo"
-authors = []
-description = ""
-telemetry = true
-requirements = []
 analysis = ["check_checker"]
 costs_version = 2
+telemetry = false
+
 [contracts.cargo]
 path = "contracts/cargo.clar"
-depends_on = []
