@@ -20,7 +20,7 @@ import { Account }
   from 'https://deno.land/x/clarinet@v0.34.0/index.ts';
 
 import fuzz
-  from 'https://cdn.skypack.dev/fast-check@3.0.0';
+  from 'https://cdn.skypack.dev/fast-check@3.1.4';
 
 export function CargoCommands(accounts: Map<string, Account>) {
   const allCommands = [

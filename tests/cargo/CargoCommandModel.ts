@@ -1,7 +1,7 @@
 // @ts-nocheck FIXME
 // https://github.com/dubzzz/fast-check/issues/2781
 import fuzz
-  from "https://cdn.skypack.dev/fast-check@3.0.0";
+  from "https://cdn.skypack.dev/fast-check@3.1.4";
 
 import { Chain, types }
   from "https://deno.land/x/clarinet@v0.34.0/index.ts";

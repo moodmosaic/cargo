@@ -5,7 +5,7 @@ import { CargoCommands }
   from "./cargo/CargoCommands.ts";
 
 import fuzz
-  from "https://cdn.skypack.dev/fast-check@3.0.0";
+  from "https://cdn.skypack.dev/fast-check@3.1.4";
 
 Clarinet.test({
   name: "Cargo model-based tests",
