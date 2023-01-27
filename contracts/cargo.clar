@@ -1,9 +1,18 @@
+;; cargo
+;; a simple decentralized shipment tracker
+
+;; constants
 (define-constant err-shipment-not-found (err u100))
 (define-constant err-tx-sender-unauthorized (err u101))
 
+;; data maps and vars
 (define-data-var last-shipment-id uint u0)
 (define-map shipments uint {location: (string-ascii 25), status: (string-ascii 25), shipper: principal, receiver: principal})
 
+;; private functions
+;;
+
+;; public functions
 (define-public (create-new-shipment (starting-location (string-ascii 25)) (receiver principal))
     (let
         (
@@ -30,6 +39,7 @@
     )
 )
 
+;; read only functions
 (define-read-only (get-shipment (shipment-id uint))
-    (ok (unwrap! (map-get? shipments shipment-id) err-shipment-not-found))
+    (unwrap! (map-get? shipments shipment-id) {status: "Does not exist"})
 )

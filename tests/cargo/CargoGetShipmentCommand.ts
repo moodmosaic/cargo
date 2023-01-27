@@ -27,7 +27,6 @@ export class CargoGetShipmentCommand
         'cargo', 'get-shipment', [this.shipId.clarityValue()],
         record.sender)
       .result
-      .expectOk()
       .expectTuple();
 
     assertEquals(actual, {

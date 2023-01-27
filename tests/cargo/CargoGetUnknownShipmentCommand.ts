@@ -1,6 +1,10 @@
 import { Principal, Uint, Model, Real, CargoCommand }
   from './CargoCommandModel.ts'
 
+import {
+  assertObjectMatch,
+} from "https://deno.land/std@0.160.0/testing/asserts.ts";
+
 export class CargoGetUnknownShipmentCommand
   implements CargoCommand {
 
@@ -21,13 +25,13 @@ export class CargoGetUnknownShipmentCommand
   }
 
   run(_: Model, real: Real): void {
-    real.chain
+    const result = real.chain
       .callReadOnlyFn(
         'cargo', 'get-shipment', [this.shipId.clarityValue()],
         this.sender.value)
-      .result
-      .expectErr()
-      .expectUint(100);
+      .result;
+
+    assertObjectMatch(result.expectTuple(), { status: '"Does not exist"' });
 
     console.log(this.printInfo(_));
   }
