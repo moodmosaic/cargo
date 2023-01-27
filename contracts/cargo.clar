@@ -20,6 +20,7 @@
         )
         ;; #[filter(starting-location, receiver)]
         (map-set shipments new-shipment-id {location: starting-location, status: "In Transit", shipper: tx-sender, receiver: receiver})
+        ;; Comment the following line to reveal the bug:
         (var-set last-shipment-id new-shipment-id)
         (ok "Shipment created successfully")
     )
