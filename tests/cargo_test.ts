@@ -22,9 +22,89 @@ Clarinet.test({
       ),
     ]);
     const result = block.receipts[0].result;
-    console.log(block);
     // Check for the success message
     result.expectOk().expectAscii("Shipment created successfully");
+    // Check that a shipment was created
+    const newShipment = chain.callReadOnlyFn(
+      "cargo",
+      "get-shipment",
+      [types.uint(1)],
+      receiver,
+    );
+    // Now we want to check and see if this returns the shipment tuple we are expecting
+    const expectedShipment = newShipment.result;
+    expectedShipment.expectOk();
+    assertEquals(
+      expectedShipment,
+      `(ok {location: "Denver", receiver: ${receiver}, shipper: ${shipper}, status: "In Transit"})`,
+    );
+  },
+});
+
+Clarinet.test({
+  name:
+    "Multiple users should be able to successfully create multiple shipments",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    const firstShipper = accounts.get("wallet_1")!.address;
+    const firstReceiver = accounts.get("wallet_2")!.address;
+    const firstLocation = "Denver";
+    let block = chain.mineBlock([
+      // Call the create-new-shipment function, passing in the starting location as the only parameter
+      Tx.contractCall(
+        "cargo",
+        "create-new-shipment",
+        [types.ascii(firstLocation), types.principal(firstReceiver)],
+        firstShipper,
+      ),
+    ]);
+    const firstResult = block.receipts[0].result;
+    // Check for the success message
+    firstResult.expectOk().expectAscii("Shipment created successfully");
+    // Check that a shipment was created
+    const firstShipment = chain.callReadOnlyFn(
+      "cargo",
+      "get-shipment",
+      [types.uint(1)],
+      firstReceiver,
+    );
+    // Now we want to check and see if this returns the shipment tuple we are expecting
+    const firstExpectedShipment = firstShipment.result;
+    firstExpectedShipment.expectOk();
+    assertEquals(
+      firstExpectedShipment,
+      `(ok {location: "${firstLocation}", receiver: ${firstReceiver}, shipper: ${firstShipper}, status: "In Transit"})`,
+    );
+
+    // Now let's create another shipment and perform the same checks
+    const secondShipper = accounts.get("wallet_3")!.address;
+    const secondReceiver = accounts.get("wallet_4")!.address;
+    const secondLocation = "New York";
+    block = chain.mineBlock([
+      // Call the create-new-shipment function, passing in the starting location as the only parameter
+      Tx.contractCall(
+        "cargo",
+        "create-new-shipment",
+        [types.ascii(secondLocation), types.principal(secondReceiver)],
+        secondShipper,
+      ),
+    ]);
+    const secondResult = block.receipts[0].result;
+    // Check for the success message
+    secondResult.expectOk().expectAscii("Shipment created successfully");
+    // Check that a shipment was created
+    const secondShipment = chain.callReadOnlyFn(
+      "cargo",
+      "get-shipment",
+      [types.uint(2)],
+      secondReceiver,
+    );
+    // Now we want to check and see if this returns the shipment tuple we are expecting
+    const secondExpectedShipment = secondShipment.result;
+    secondExpectedShipment.expectOk();
+    assertEquals(
+      secondExpectedShipment,
+      `(ok {location: "${secondLocation}", receiver: ${secondReceiver}, shipper: ${secondShipper}, status: "In Transit"})`,
+    );
   },
 });
 
@@ -56,6 +136,20 @@ Clarinet.test({
     const result = block.receipts[0].result;
     // Check for the success message
     result.expectOk().expectAscii("Shipment updated successfully");
+    // Check that a shipment was updated
+    const newShipment = chain.callReadOnlyFn(
+      "cargo",
+      "get-shipment",
+      [types.uint(1)],
+      receiver,
+    );
+    // Now we want to check and see if this returns the shipment tuple we are expecting
+    const expectedShipment = newShipment.result;
+    expectedShipment.expectOk();
+    assertEquals(
+      expectedShipment,
+      `(ok {location: "Phoenix", receiver: ${receiver}, shipper: ${shipper}, status: "In Transit"})`,
+    );
   },
 });
 
